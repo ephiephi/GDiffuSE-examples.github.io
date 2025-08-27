@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Audio Samples — Demo</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Audio Samples — Speech Enhancement</h1>
+  <p>Comparison of our method vs. another algorithm, with noisy/clean/noise references. Click to play; spectrograms share a global dB scale.</p>
+</header>
+
+<main>
+  <!-- ===== SAMPLE s001 ===== -->
+  <section class="sample" id="s001">
+    <h2>Sample s001</h2>
+
+    <div class="grid audio-row">
+      <div class="cell"><div class="label">Noisy</div>
+        <audio controls preload="none">
+          <source src="audio/s001_noisy.wav" type="audio/wav">
+        </audio>
+      </div>
+      <div class="cell"><div class="label">Clean</div>
+        <audio controls preload="none">
+          <source src="audio/s001_clean.wav" type="audio/wav">
+        </audio>
+      </div>
+      <div class="cell"><div class="label">Noise</div>
+        <audio controls preload="none">
+          <source src="audio/s001_noise.wav" type="audio/wav">
+        </audio>
+      </div>
+      <div class="cell"><div class="label">Ours</div>
+        <audio controls preload="none">
+          <source src="audio/s001_ours.wav" type="audio/wav">
+        </audio>
+      </div>
+      <div class="cell"><div class="label">Other</div>
+        <audio controls preload="none">
+          <source src="audio/s001_other.wav" type="audio/wav">
+        </audio>
+      </div>
+    </div>
+
+    <div class="grid img-row">
+      <figure class="cell">
+        <img src="img/s001_noisy.png" alt="s001 noisy spectrogram">
+        <figcaption>Noisy</figcaption>
+      </figure>
+      <figure class="cell">
+        <img src="img/s001_clean.png" alt="s001 clean spectrogram">
+        <figcaption>Clean</figcaption>
+      </figure>
+      <figure class="cell">
+        <img src="img/s001_noise.png" alt="s001 noise spectrogram">
+        <figcaption>Noise</figcaption>
+      </figure>
+      <figure class="cell">
+        <img src="img/s001_ours.png" alt="s001 ours spectrogram">
+        <figcaption>Ours</figcaption>
+      </figure>
+      <figure class="cell">
+        <img src="img/s001_other.png" alt="s001 other spectrogram">
+        <figcaption>Other</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Duplicate the whole <section> for s002, s003, ... -->
+</main>
+
+<footer>
+  <p>Contact: your@email —
+     Last updated: <span id="ts"></span></p>
+</footer>
+
+<script>
+  document.getElementById('ts').textContent = new Date().toISOString().slice(0,10);
+</script>
+</body>
+</html>
