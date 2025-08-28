@@ -1,84 +1,193 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Audio Samples — Demo</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Speech Enhancement — Audio & Spectrograms</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f8f9fa; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white; padding: 2rem 0; margin-bottom: 2rem; border-radius: 10px;
+    }
+    .header-content { max-width: 1200px; margin: 0 auto; padding: 0 20px; text-align: center; }
+    h1 { font-size: 2.5rem; margin-bottom: 0.5rem; font-weight: 300; }
+    .subtitle { font-size: 1.1rem; opacity: 0.9; margin-bottom: 1rem; }
+
+    .section { background: white; padding: 2rem; margin-bottom: 2rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    h2 { color: #4a5568; margin-bottom: 1.5rem; font-size: 1.8rem; border-bottom: 2px solid #667eea; padding-bottom: 0.5rem; }
+
+    .comparison-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2rem; }
+    .audio-sample { background: #f7fafc; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #667eea; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .audio-sample:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+    .audio-sample h3 { color: #2d3748; margin-bottom: 1rem; font-size: 1.1rem; }
+
+    .audio-visual-container { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 0.3rem; }
+    .audio-controls-section, .spectrogram-section { flex: 1; min-width: 250px; }
+    audio { width: 100%; height: 40px; }
+    .sample-info { font-size: 0.9rem; color: #718096; margin-top: 0.5rem; }
+
+    .spectrogram-container { border: 2px solid #e2e8f0; border-radius: 8px; overflow: hidden; background: white; transition: border-color 0.2s ease; }
+    .spectrogram-container:hover { border-color: #667eea; }
+    .spectrogram-img { width: 100%; height: 150px; object-fit: cover; display: block; cursor: pointer; transition: transform 0.2s ease; }
+    .spectrogram-img:hover { transform: scale(1.02); }
+    .spectrogram-placeholder {
+      width: 100%; height: 150px;
+      background: linear-gradient(45deg, #f1f5f9 25%, transparent 25%),
+                  linear-gradient(-45deg, #f1f5f9 25%, transparent 25%),
+                  linear-gradient(45deg, transparent 75%, #f1f5f9 75%),
+                  linear-gradient(-45deg, transparent 75%, #f1f5f9 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+      display: flex; align-items: center; justify-content: center; color: #64748b; font-size: 0.9rem; padding: 1rem;
+    }
+
+    /* Modal */
+    .spectrogram-modal { display: none; position: fixed; z-index: 2000; inset: 0; background-color: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
+    .spectrogram-modal-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); max-width: 90%; max-height: 90%; border-radius: 10px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+    .spectrogram-modal-img { width: 100%; height: auto; display: block; }
+    .modal-close { position: absolute; top: 15px; right: 25px; color: white; font-size: 35px; font-weight: bold; cursor: pointer; z-index: 2001; background: rgba(0,0,0,0.5); border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; }
+    .modal-close:hover { background: rgba(255,255,255,0.2); }
+
+    /* Sticky nav */
+    .nav-buttons { position: fixed; top: 50%; right: 20px; transform: translateY(-50%); z-index: 1000; }
+    .nav-button { display: block; background: #667eea; color: white; padding: 0.5rem; margin-bottom: 0.5rem; border-radius: 50%; text-decoration: none; width: 50px; height: 50px; text-align: center; line-height: 40px; }
+    .nav-button:hover { background: #5a67d8; }
+
+    @media (max-width: 768px) {
+      .container { padding: 10px; }
+      h1 { font-size: 2rem; }
+      .nav-buttons { display: none; }
+      .audio-visual-container { flex-direction: column; }
+      .audio-controls-section, .spectrogram-section { min-width: unset; }
+      .spectrogram-img { height: 120px; }
+    }
+  </style>
 </head>
 <body>
-<header>
-  <h1>Audio Samples — Speech Enhancement</h1>
-  <p>Comparison of our method vs. another algorithm, with noisy/clean/noise references. Click to play; spectrograms share a global dB scale.</p>
-</header>
+  <!-- Quick nav -->
+  <div class="nav-buttons">
+    <a href="#samples" class="nav-button" title="Samples">🎵</a>
+  </div>
 
-<main>
-  <!-- ===== SAMPLE s001 ===== -->
-  <section class="sample" id="s001">
-    <h2>Sample s001</h2>
-
-    <div class="grid audio-row">
-      <div class="cell"><div class="label">Noisy</div>
-        <audio controls preload="none">
-          <source src="audio/s001_noisy.wav" type="audio/wav">
-        </audio>
-      </div>
-      <div class="cell"><div class="label">Clean</div>
-        <audio controls preload="none">
-          <source src="audio/s001_clean.wav" type="audio/wav">
-        </audio>
-      </div>
-      <div class="cell"><div class="label">Noise</div>
-        <audio controls preload="none">
-          <source src="audio/s001_noise.wav" type="audio/wav">
-        </audio>
-      </div>
-      <div class="cell"><div class="label">Ours</div>
-        <audio controls preload="none">
-          <source src="audio/s001_ours.wav" type="audio/wav">
-        </audio>
-      </div>
-      <div class="cell"><div class="label">Other</div>
-        <audio controls preload="none">
-          <source src="audio/s001_other.wav" type="audio/wav">
-        </audio>
-      </div>
+  <header>
+    <div class="header-content">
+      <h1>Speech Enhancement — Audio Demo</h1>
+      <p class="subtitle">Clean • Noisy • Noise • Our Method • Other Method — with matched spectrograms</p>
     </div>
+  </header>
 
-    <div class="grid img-row">
-      <figure class="cell">
-        <img src="img/s001_noisy.png" alt="s001 noisy spectrogram">
-        <figcaption>Noisy</figcaption>
-      </figure>
-      <figure class="cell">
-        <img src="img/s001_clean.png" alt="s001 clean spectrogram">
-        <figcaption>Clean</figcaption>
-      </figure>
-      <figure class="cell">
-        <img src="img/s001_noise.png" alt="s001 noise spectrogram">
-        <figcaption>Noise</figcaption>
-      </figure>
-      <figure class="cell">
-        <img src="img/s001_ours.png" alt="s001 ours spectrogram">
-        <figcaption>Ours</figcaption>
-      </figure>
-      <figure class="cell">
-        <img src="img/s001_other.png" alt="s001 other spectrogram">
-        <figcaption>Other</figcaption>
-      </figure>
+  <div class="container">
+    <section id="samples" class="section">
+      <h2>Audio Samples & Spectrograms</h2>
+      <p style="color:#718096; margin-bottom:1rem;">
+        Click to play audio. Click a spectrogram to enlarge. All spectrograms share a global dB color scale for fair visual comparison.
+      </p>
+      <div id="samplesContainer"></div>
+    </section>
+  </div>
+
+  <!-- Spectrogram Modal -->
+  <div id="spectrogramModal" class="spectrogram-modal">
+    <span class="modal-close" onclick="closeSpectrogramModal()">&times;</span>
+    <div class="spectrogram-modal-content">
+      <img id="modalSpectrogramImg" class="spectrogram-modal-img" src="" alt="">
     </div>
-  </section>
+  </div>
 
-  <!-- Duplicate the whole <section> for s002, s003, ... -->
-</main>
+  <script>
+    /* ---------- Configure your sample IDs here ---------- */
+    // Add as many as you want. 'noiseType' and 'snr' are optional labels.
+    const SAMPLES = [
+      { id: 's001', noiseType: 'Cafeteria', snr: '5 dB' },
+      { id: 's002', noiseType: 'Street',    snr: '0 dB' },
+      { id: 's003', noiseType: 'Office',    snr: '10 dB' },
+    ];
 
-<footer>
-  <p>Contact: your@email —
-     Last updated: <span id="ts"></span></p>
-</footer>
+    // Expected file naming:
+    // audio/<id>_clean.wav,  audio/<id>_noisy.wav, audio/<id>_noise.wav,
+    // audio/<id>_ours.wav,   audio/<id>_other.wav
+    // spectrograms/<id>_clean_spec.png, ... _noisy_spec.png, _noise_spec.png,
+    // _ours_spec.png, _other_spec.png
 
-<script>
-  document.getElementById('ts').textContent = new Date().toISOString().slice(0,10);
-</script>
+    const TYPES = [
+      { key: 'clean', label: '🎤 Clean (reference)',  info: sid => 'Original clean speech' },
+      { key: 'noisy', label: '🔊 Noisy input',        info: sid => (sid.noiseType ? `${sid.noiseType} noise` : 'Noisy mixture') + (sid.snr ? ` (SNR: ${sid.snr})` : '') },
+      { key: 'noise', label: '🎵 Noise component',    info: sid => 'Estimated / extracted noise' },
+      { key: 'ours',  label: '🎯 Our method',         info: sid => 'Enhanced by our algorithm' },
+      { key: 'other', label: '🔬 Other method',       info: sid => 'Enhanced by baseline algorithm' },
+    ];
+
+    let currentAudio = null;
+    function playAudio(src) {
+      if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
+      currentAudio = new Audio(src);
+      currentAudio.play().catch(() => alert('Audio not found: ' + src));
+    }
+
+    function openSpectrogramModal(src, alt) {
+      const modal = document.getElementById('spectrogramModal');
+      const modalImg = document.getElementById('modalSpectrogramImg');
+      modal.style.display = 'block';
+      modalImg.src = src;
+      modalImg.alt = alt;
+      modal.onclick = function (e) { if (e.target === modal) closeSpectrogramModal(); };
+    }
+    function closeSpectrogramModal() {
+      const modal = document.getElementById('spectrogramModal');
+      modal.style.display = 'none';
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSpectrogramModal(); });
+
+    function spectroImgOrPlaceholder(src, label) {
+      const esc = s => s.replace(/"/g, '&quot;');
+      return `
+        <div class="spectrogram-container">
+          <img src="${esc(src)}"
+               alt="${esc(label)}"
+               class="spectrogram-img"
+               onclick="openSpectrogramModal('${esc(src)}','${esc(label)}')"
+               onerror="this.parentNode.innerHTML='<div class=&quot;spectrogram-placeholder&quot;>📊<br>Spectrogram not available<br><small>Missing: ${esc(src)}</small></div>'">
+        </div>`;
+    }
+
+    function renderSampleRow(sample) {
+      const wrapStart = `<div class="comparison-grid" style="margin-bottom:2rem;">`;
+      const wrapEnd   = `</div>`;
+      const cards = TYPES.map(t => {
+        const a = `audio/${sample.id}_${t.key}.wav`;
+        const p = `spectrograms/${sample.id}_${t.key}_spec.png`;
+        return `
+          <div class="audio-sample">
+            <h3>${t.label}</h3>
+            <div class="audio-visual-container">
+              <div class="audio-controls-section">
+                <audio controls class="audio-controls">
+                  <source src="${a}" type="audio/wav">
+                </audio>
+                <div class="sample-info">${t.info(sample)}</div>
+              </div>
+              <div class="spectrogram-section">
+                ${spectroImgOrPlaceholder(p, t.label + ' — ' + sample.id)}
+              </div>
+            </div>
+            <button class="play-button" style="background:#667eea;color:#fff;border:none;padding:0.4rem 0.8rem;border-radius:6px;cursor:pointer;"
+              onclick="playAudio('${a}')">▶ Play</button>
+          </div>`;
+      }).join('\n');
+
+      return `
+        <h3 style="margin:0.4rem 0 0.8rem; color:#4a5568;">Sample ${sample.id}</h3>
+        ${wrapStart}${cards}${wrapEnd}
+      `;
+    }
+
+    // Render all samples
+    const container = document.getElementById('samplesContainer');
+    container.innerHTML = SAMPLES.map(renderSampleRow).join('\n');
+  </script>
 </body>
 </html>
