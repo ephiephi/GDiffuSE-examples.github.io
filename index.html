@@ -102,9 +102,9 @@
     /* ---------- Configure your sample IDs here ---------- */
     // Add as many as you want. 'noiseType' and 'snr' are optional labels.
     const SAMPLES = [
-      { id: 's001', noiseType: 'Cafeteria', snr: '5 dB' },
-      { id: 's002', noiseType: 'Street',    snr: '0 dB' },
-      { id: 's003', noiseType: 'Office',    snr: '10 dB' },
+      { id: 's001', noiseType: 'bbc', snr: '5 dB' },
+      { id: 's002', noiseType: 'bbc',    snr: '0 dB' },
+      { id: 's003', noiseType: 'bbc',    snr: '10 dB' },
     ];
 
     // Expected file naming:
@@ -117,8 +117,8 @@
       { key: 'clean', label: '🎤 Clean (reference)',  info: sid => 'Original clean speech' },
       { key: 'noisy', label: '🔊 Noisy input',        info: sid => (sid.noiseType ? `${sid.noiseType} noise` : 'Noisy mixture') + (sid.snr ? ` (SNR: ${sid.snr})` : '') },
       { key: 'noise', label: '🎵 Noise component',    info: sid => 'Estimated / extracted noise' },
-      { key: 'ours',  label: '🎯 Our method',         info: sid => 'Enhanced by our algorithm' },
-      { key: 'other', label: '🔬 Other method',       info: sid => 'Enhanced by baseline algorithm' },
+      { key: 'ours',  label: '🎯 GuiDiffuSE(Ours)',         info: sid => 'Enhanced by our algorithm' },
+      { key: 'other', label: '🔬 SGMSE',       info: sid => 'Enhanced by baseline algorithm' },
     ];
 
     let currentAudio = null;
