@@ -1,0 +1,14 @@
+:root { --pad: 12px; --bg: #fff; --fg: #222; --muted:#666; }
+* { box-sizing: border-box; }
+html, body { margin:0; padding:0; font: 16px/1.4 system-ui, Arial, sans-serif; color:var(--fg); background:var(--bg);}
+header, footer { max-width: 1100px; margin: 0 auto; padding: var(--pad); }
+h1 { margin: 0.2em 0 0.1em; }
+p { margin: 0.1em 0 0.6em; color: var(--muted); }
+
+table.samples { width: 100%; border-collapse: collapse; overflow-x:auto; display:block; }
+table.samples thead { position: sticky; top: 0; background: #fafafa; }
+table.samples th, table.samples td { border: 1px solid #e7e7e7; padding: 6px; text-align: center; }
+table.samples th:first-child, table.samples td:first-child { text-align:left; white-space:nowrap; }
+
+audio { width: 190px; max-width: 100%; }
+@media (max-width: 900px){ audio { width: 150px; } }
