@@ -75,8 +75,8 @@
 
   <header>
     <div class="header-content">
-      <h1>Speech Enhancement — Audio Demo</h1>
-      <p class="subtitle">Clean • Noisy • Noise • Our Method • Other Method — with matched spectrograms</p>
+      <h1>GuiDiffSE Speech Enhancement — Audio Demo</h1>
+      <p class="subtitle">Clean • Noisy • Our Method • Other Method — with matched spectrograms</p>
     </div>
   </header>
 
@@ -116,8 +116,8 @@
     const TYPES = [
       { key: 'clean', label: '🎤 Clean (reference)',  info: sid => 'Original clean speech' },
       { key: 'noisy', label: '🔊 Noisy input',        info: sid => (sid.noiseType ? `${sid.noiseType} noise` : 'Noisy mixture') + (sid.snr ? ` (SNR: ${sid.snr})` : '') },
-      { key: 'noise', label: '🎵 Noise component',    info: sid => 'Estimated / extracted noise' },
-      { key: 'ours',  label: '🎯 GuiDiffuSE(Ours)',         info: sid => 'Enhanced by our algorithm' },
+      // { key: 'noise', label: '🎵 Noise component',    info: sid => 'Estimated / extracted noise' },
+      { key: 'ours',  label: '🎯 GuiDiffSE(Ours)',         info: sid => 'Enhanced by our algorithm' },
       { key: 'other', label: '🔬 SGMSE',       info: sid => 'Enhanced by baseline algorithm' },
     ];
 
