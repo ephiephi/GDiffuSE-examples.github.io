@@ -155,7 +155,8 @@
     }
 
     function renderSampleRow(sample) {
-      const wrapStart = `<div class="comparison-grid" style="margin-bottom:2rem;">`;
+      // const wrapStart = `<div class="comparison-grid" style="margin-bottom:2rem;">`;
+      const wrapStart = `<div class="comparison-grid" style="margin-bottom:2rem; grid-template-columns: repeat(2, minmax(280px, 1fr));">`;
       const wrapEnd   = `</div>`;
       const cards = TYPES.map(t => {
         const a = `audio/${sample.id}_${t.key}.wav`;
