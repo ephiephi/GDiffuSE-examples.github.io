@@ -102,9 +102,13 @@
     /* ---------- Configure your sample IDs here ---------- */
     // Add as many as you want. 'noiseType' and 'snr' are optional labels.
     const SAMPLES = [
-      { id: 's001', noiseType: 'bbc', snr: '5 dB' },
-      { id: 's002', noiseType: 'bbc',    snr: '0 dB' },
-      { id: 's003', noiseType: 'bbc',    snr: '10 dB' },
+      { id: 's001', noiseType: 'BBC', snr: '5 dB' }, //0
+      { id: 's002', noiseType: 'BBC',    snr: '5 dB' }, //5
+      { id: 's003', noiseType: 'BBC',    snr: '0 dB' }, //6
+      { id: 's004', noiseType: 'BBC',    snr: '-5 dB' }, //7
+      { id: 's005', noiseType: 'BBC',    snr: '10 dB' }, //14
+      { id: 's006', noiseType: 'BBC-high-frequency-Energy',    snr: '5 dB' }, //4
+      { id: 's007', noiseType: 'AR',    snr: '5 dB' }, //7
     ];
 
     // Expected file naming:
