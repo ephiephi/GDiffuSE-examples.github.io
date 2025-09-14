@@ -99,74 +99,6 @@
   </div>
 
   <script>
-  /* ---------- your SAMPLES stays the same ---------- */
-  const SAMPLES = [
-    { id: 's001', noiseType: 'BBC', snr: '5 dB' },
-    { id: 's002', noiseType: 'BBC', snr: '5 dB' },
-    { id: 's003', noiseType: 'BBC', snr: '0 dB' },
-    { id: 's004', noiseType: 'BBC', snr: '-5 dB' },
-    { id: 's005', noiseType: 'BBC', snr: '10 dB' },
-    { id: 's006', noiseType: 'BBC-high-frequency-Energy', snr: '5 dB' },
-    { id: 's007', noiseType: 'AR', snr: '5 dB' },
-  ];
-
-  /* ---------- add your metrics here (per sample, per type) ---------- */
-  /* Only add for types you want to show (noisy/ours/other). */
-  const METRICS = {
-    s001: {
-      noisy: { pesq: 1.62, stoi: 0.68, sisdr: -1.3 },
-      ours:  { pesq: 2.98, stoi: 0.90, sisdr: 10.7 },
-      other: { pesq: 2.75, stoi: 0.87, sisdr:  9.2 },
-    },
-    s002: {
-      noisy: { pesq: 1.55, stoi: 0.66, sisdr: -0.8 },
-      ours:  { pesq: 3.05, stoi: 0.92, sisdr: 11.4 },
-      other: { pesq: 2.84, stoi: 0.89, sisdr: 10.1 },
-    },
-    // s003: {...}, etc.
-  };
-
-  /* ---------- helper: build the info string with \n + metrics ---------- */
-  function infoWithMetrics(sample, typeKey) {
-    // base line (what you already show)
-    let base;
-    if (typeKey === 'clean') {
-      base = 'Original clean speech';
-    } else if (typeKey === 'noisy') {
-      const nt = sample.noiseType ? `${sample.noiseType} noise` : 'Noisy mixture';
-      base = sample.snr ? `${nt} (SNR: ${sample.snr})` : nt;
-    } else if (typeKey === 'ours') {
-      base = 'Enhanced by our algorithm';
-    } else if (typeKey === 'other') {
-      base = 'Enhanced by baseline algorithm';
-    } else {
-      base = '';
-    }
-
-    // metrics lines
-    const m = (METRICS[sample.id] || {})[typeKey];
-    if (!m) return base; // no metrics provided: just show base
-
-    const pesq  = (m.pesq  != null) ? `PESQ: ${m.pesq.toFixed(2)}`   : null;
-    const stoi  = (m.stoi  != null) ? `STOI: ${m.stoi.toFixed(2)}`   : null;
-    const sisdr = (m.sisdr != null) ? `SI-SDR: ${m.sisdr.toFixed(1)} dB` : null;
-
-    const lines = [base, pesq, stoi, sisdr].filter(Boolean);
-    // join with "\n" so CSS 'white-space: pre-line' makes real line breaks
-    return lines.join('\n');
-  }
-
-  /* ---------- replace your TYPES with this ---------- */
-  const TYPES = [
-    { key: 'clean', label: '🎤 Clean (reference)',  info: sid => infoWithMetrics(sid, 'clean') },
-    { key: 'noisy', label: '🔊 Noisy input',        info: sid => infoWithMetrics(sid, 'noisy') },
-    { key: 'ours',  label: '🎯 GuiDiffSE(Ours)',     info: sid => infoWithMetrics(sid, 'ours') },
-    { key: 'other', label: '🔬 SGMSE',              info: sid => infoWithMetrics(sid, 'other') },
-  ];
-</script>
-
-
-  <!-- <script>
     /* ---------- Configure your sample IDs here ---------- */
     // Add as many as you want. 'noiseType' and 'snr' are optional labels.
     const SAMPLES = [
@@ -261,6 +193,6 @@
     // Render all samples
     const container = document.getElementById('samplesContainer');
     container.innerHTML = SAMPLES.map(renderSampleRow).join('\n');
-  </script> -->
+  </script>
 </body>
 </html>
