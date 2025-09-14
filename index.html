@@ -101,15 +101,24 @@
 
 <script>
   // -------- Samples (unchanged) --------
-  const SAMPLES = [
-    { id: 's001', noiseType: 'BBC', snr: '5 dB' },
-    { id: 's002', noiseType: 'BBC', snr: '5 dB' },
-    { id: 's003', noiseType: 'BBC', snr: '0 dB' },
-    { id: 's004', noiseType: 'BBC', snr: '-5 dB' },
-    { id: 's005', noiseType: 'BBC', snr: '10 dB' },
-    { id: 's006', noiseType: 'BBC-high-frequency-Energy', snr: '5 dB' },
-    { id: 's007', noiseType: 'AR', snr: '5 dB' },
-  ];
+  // const SAMPLES = [
+  //   { id: 's001', noiseType: 'BBC', snr: '5 dB' },
+  //   { id: 's002', noiseType: 'BBC', snr: '5 dB' },
+  //   { id: 's003', noiseType: 'BBC', snr: '0 dB' },
+  //   { id: 's004', noiseType: 'BBC', snr: '-5 dB' },
+  //   { id: 's005', noiseType: 'BBC', snr: '10 dB' },
+  //   { id: 's006', noiseType: 'BBC-high-frequency-Energy', snr: '5 dB' },
+  //   { id: 's007', noiseType: 'AR', snr: '5 dB' },
+  // ];
+    const SAMPLES = [
+      { id: 's001', noiseType: 'BBC-NHU05011211', snr: '5 dB' }, //0
+      { id: 's002', noiseType: 'BBC-07037651',    snr: '5 dB' }, //5
+      { id: 's003', noiseType: 'BBC-NHU05101064',    snr: '0 dB' }, //6
+      { id: 's004', noiseType: 'BBC-NHU05095223',    snr: '-5 dB' }, //7
+      { id: 's005', noiseType: 'BBC-07015058',    snr: '10 dB' }, //14
+      { id: 's006', noiseType: 'BBC-high-freq-07070192',    snr: '5 dB' }, //4
+      { id: 's007', noiseType: 'AR',    snr: '5 dB' }, //7
+    ];
 
   // -------- Metrics (fill yours; missing entries are okay) --------
   const METRICS = {
@@ -122,6 +131,11 @@
       noisy: { pesq: 1.55, stoi: 0.66, sisdr: -0.8 },
       ours:  { pesq: 3.05, stoi: 0.92, sisdr: 11.4 },
       other: { pesq: 2.84, stoi: 0.89, sisdr: 10.1 },
+    },
+    s006: {
+      noisy: { pesq: 1.07, stoi: 0.90, sisdr: 5.00,dnsmos: 2.43 },
+      ours:  { pesq: 1.60, stoi:0.92 , sisdr: 13.56,dnsmos:3.23 },
+      other: { pesq: 1.08, stoi:0.95 , sisdr: 5.94,dnsmos:2.94 },
     },
     // s003: {...} etc.
   };
@@ -146,6 +160,7 @@
     if (!m || typeKey === 'clean') return base;
 
     const lines = [base];
+    if (m.dnsmos  != null) lines.push(`DNSMOS: ${m.dnsmos.toFixed(2)}`);
     if (m.pesq  != null) lines.push(`PESQ: ${m.pesq.toFixed(2)}`);
     if (m.stoi  != null) lines.push(`STOI: ${m.stoi.toFixed(2)}`);
     if (m.sisdr != null) lines.push(`SI-SDR: ${m.sisdr.toFixed(1)} dB`);
