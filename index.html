@@ -98,7 +98,140 @@
     </div>
   </div>
 
-  <script>
+
+<script>
+  // -------- Samples (unchanged) --------
+  const SAMPLES = [
+    { id: 's001', noiseType: 'BBC', snr: '5 dB' },
+    { id: 's002', noiseType: 'BBC', snr: '5 dB' },
+    { id: 's003', noiseType: 'BBC', snr: '0 dB' },
+    { id: 's004', noiseType: 'BBC', snr: '-5 dB' },
+    { id: 's005', noiseType: 'BBC', snr: '10 dB' },
+    { id: 's006', noiseType: 'BBC-high-frequency-Energy', snr: '5 dB' },
+    { id: 's007', noiseType: 'AR', snr: '5 dB' },
+  ];
+
+  // -------- Metrics (fill yours; missing entries are okay) --------
+  const METRICS = {
+    s001: {
+      noisy: { pesq: 1.62, stoi: 0.68, sisdr: -1.3 },
+      ours:  { pesq: 2.98, stoi: 0.90, sisdr: 10.7 },
+      other: { pesq: 2.75, stoi: 0.87, sisdr:  9.2 },
+    },
+    s002: {
+      noisy: { pesq: 1.55, stoi: 0.66, sisdr: -0.8 },
+      ours:  { pesq: 3.05, stoi: 0.92, sisdr: 11.4 },
+      other: { pesq: 2.84, stoi: 0.89, sisdr: 10.1 },
+    },
+    // s003: {...} etc.
+  };
+
+  // -------- Helper: build info text (first line + metrics on new lines) --------
+  function infoWithMetrics(sample, typeKey) {
+    // Base line:
+    let base = '';
+    if (typeKey === 'clean') {
+      base = 'Original clean speech';
+    } else if (typeKey === 'noisy') {
+      const nt = sample.noiseType ? `${sample.noiseType} noise` : 'Noisy mixture';
+      base = sample.snr ? `${nt} (SNR: ${sample.snr})` : nt;
+    } else if (typeKey === 'ours') {
+      base = 'Enhanced by our algorithm';
+    } else if (typeKey === 'other') {
+      base = 'Enhanced by baseline algorithm';
+    }
+
+    // Metrics (if present)
+    const m = (METRICS[sample.id] || {})[typeKey];
+    if (!m || typeKey === 'clean') return base;
+
+    const lines = [base];
+    if (m.pesq  != null) lines.push(`PESQ: ${m.pesq.toFixed(2)}`);
+    if (m.stoi  != null) lines.push(`STOI: ${m.stoi.toFixed(2)}`);
+    if (m.sisdr != null) lines.push(`SI-SDR: ${m.sisdr.toFixed(1)} dB`);
+    return lines.join('\n'); // CSS white-space: pre-line makes this break
+  }
+
+  // -------- Card types (use the helper above) --------
+  const TYPES = [
+    { key: 'clean', label: '🎤 Clean (reference)',  info: s => infoWithMetrics(s, 'clean') },
+    { key: 'noisy', label: '🔊 Noisy input',        info: s => infoWithMetrics(s, 'noisy') },
+    { key: 'ours',  label: '🎯 GuiDiffSE(Ours)',     info: s => infoWithMetrics(s, 'ours') },
+    { key: 'other', label: '🔬 SGMSE',              info: s => infoWithMetrics(s, 'other') },
+  ];
+
+  // -------- Existing helpers/render (unchanged) --------
+  let currentAudio = null;
+  function playAudio(src) {
+    if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
+    currentAudio = new Audio(src);
+    currentAudio.play().catch(() => alert('Audio not found: ' + src));
+  }
+
+  function openSpectrogramModal(src, alt) {
+    const modal = document.getElementById('spectrogramModal');
+    const modalImg = document.getElementById('modalSpectrogramImg');
+    modal.style.display = 'block';
+    modalImg.src = src;
+    modalImg.alt = alt;
+    modal.onclick = function (e) { if (e.target === modal) closeSpectrogramModal(); };
+  }
+  function closeSpectrogramModal() {
+    const modal = document.getElementById('spectrogramModal');
+    modal.style.display = 'none';
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSpectrogramModal(); });
+
+  function spectroImgOrPlaceholder(src, label) {
+    const esc = s => s.replace(/"/g, '&quot;');
+    return `
+      <div class="spectrogram-container">
+        <img src="${esc(src)}"
+             alt="${esc(label)}"
+             class="spectrogram-img"
+             onclick="openSpectrogramModal('${esc(src)}','${esc(label)}')"
+             onerror="this.parentNode.innerHTML='<div class=&quot;spectrogram-placeholder&quot;>📊<br>Spectrogram not available<br><small>Missing: ${esc(src)}</small></div>'">
+      </div>`;
+  }
+
+  function renderSampleRow(sample) {
+    const wrapStart = `<div class="comparison-grid" style="margin-bottom:2rem; grid-template-columns: repeat(2, minmax(280px, 1fr));">`;
+    const wrapEnd   = `</div>`;
+    const cards = TYPES.map(t => {
+      const a = `audio/${sample.id}_${t.key}.wav`;
+      const p = `spectrograms/${sample.id}_${t.key}_spec.png`;
+      return `
+        <div class="audio-sample">
+          <h3>${t.label}</h3>
+          <div class="audio-visual-container">
+            <div class="audio-controls-section">
+              <audio controls class="audio-controls">
+                <source src="${a}" type="audio/wav">
+              </audio>
+              <div class="sample-info">${t.info(sample)}</div>
+            </div>
+            <div class="spectrogram-section">
+              ${spectroImgOrPlaceholder(p, t.label + ' — ' + sample.id)}
+            </div>
+          </div>
+          <button class="play-button" style="background:#667eea;color:#fff;border:none;padding:0.4rem 0.8rem;border-radius:6px;cursor:pointer;"
+            onclick="playAudio('${a}')">▶ Play</button>
+        </div>`;
+    }).join('\n');
+
+    return `
+      <h3 style="margin:0.4rem 0 0.8rem; color:#4a5568;">Sample ${sample.id}</h3>
+      ${wrapStart}${cards}${wrapEnd}
+    `;
+  }
+
+  // Render all samples
+  const container = document.getElementById('samplesContainer');
+  container.innerHTML = SAMPLES.map(renderSampleRow).join('\n');
+</script>
+
+
+  <!-- <script>
     /* ---------- Configure your sample IDs here ---------- */
     // Add as many as you want. 'noiseType' and 'snr' are optional labels.
     const SAMPLES = [
@@ -193,6 +326,6 @@
     // Render all samples
     const container = document.getElementById('samplesContainer');
     container.innerHTML = SAMPLES.map(renderSampleRow).join('\n');
-  </script>
+  </script> -->
 </body>
 </html>
