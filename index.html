@@ -123,15 +123,31 @@
   // -------- Metrics (fill yours; missing entries are okay) --------
   const METRICS = {
     s001: {
-      noisy: { pesq: 1.62, stoi: 0.68, sisdr: -1.3 },
-      ours:  { pesq: 2.98, stoi: 0.90, sisdr: 10.7 },
-      other: { pesq: 2.75, stoi: 0.87, sisdr:  9.2 },
+      noisy: { pesq: 1.02, stoi: 0.83, sisdr: 5.01,dnsmos: 1.78 },
+      ours:  { pesq: 1.34, stoi:0.89 , sisdr: 13.31,dnsmos:2.75 },
+      other: { pesq: 1.13, stoi:0.88 , sisdr: 11.41,dnsmos:2.84 },
     },
     s002: {
-      noisy: { pesq: 1.55, stoi: 0.66, sisdr: -0.8 },
-      ours:  { pesq: 3.05, stoi: 0.92, sisdr: 11.4 },
-      other: { pesq: 2.84, stoi: 0.89, sisdr: 10.1 },
+      noisy: { pesq: 1.06, stoi: 0.86, sisdr: 5.01,dnsmos: 2.05 },
+      ours:  { pesq: 1.19, stoi:0.85 , sisdr: 9.30,dnsmos:2.74 },
+      other: { pesq: 1.45, stoi:0.92 , sisdr: 15.19,dnsmos:3.13 },
     },
+    s003: {
+      noisy: { pesq: 1.03, stoi: 0.84, sisdr: 0.04,dnsmos: 1.54 },
+      ours:  { pesq: 1.31, stoi:0.88 , sisdr: 4.80,dnsmos:2.80 },
+      other: { pesq: 1.08, stoi:0.89 , sisdr: 1.88,dnsmos:2.85 },
+    },
+    s004: {
+      noisy: { pesq: 1.03, stoi: 0.84, sisdr: -5.00,dnsmos: 1.29 },
+      ours:  { pesq: 1.19, stoi:0.93 , sisdr: 7.72,dnsmos:2.70 },
+      other: { pesq: 1.03, stoi:0.92 , sisdr: -5.42,dnsmos:1.90 },
+    },
+    s005: {
+      noisy: { pesq: 1.03, stoi: 0.84, sisdr: -5.00,dnsmos: 1.29 },
+      ours:  { pesq: 1.19, stoi:0.93 , sisdr: 7.72,dnsmos:2.70 },
+      other: { pesq: 1.03, stoi:0.92 , sisdr: -5.42,dnsmos:1.90 },
+    },
+
     s006: {
       noisy: { pesq: 1.07, stoi: 0.90, sisdr: 5.00,dnsmos: 2.43 },
       ours:  { pesq: 1.60, stoi:0.92 , sisdr: 13.56,dnsmos:3.23 },
@@ -160,10 +176,10 @@
     if (!m || typeKey === 'clean') return base;
 
     const lines = [base];
-    if (m.dnsmos  != null) lines.push(`DNSMOS: ${m.dnsmos.toFixed(2)}`);
     if (m.pesq  != null) lines.push(`PESQ: ${m.pesq.toFixed(2)}`);
-    if (m.stoi  != null) lines.push(`STOI: ${m.stoi.toFixed(2)}`);
     if (m.sisdr != null) lines.push(`SI-SDR: ${m.sisdr.toFixed(1)} dB`);
+    if (m.dnsmos  != null) lines.push(`DNSMOS: ${m.dnsmos.toFixed(2)}`);
+    if (m.stoi  != null) lines.push(`STOI: ${m.stoi.toFixed(2)}`);
     return lines.join('\n'); // CSS white-space: pre-line makes this break
   }
 
